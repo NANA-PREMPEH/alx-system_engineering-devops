@@ -1,7 +1,2 @@
-<<<<<<< HEAD
-!#/bin/bash
-chmod 111101011 hello 
-=======
 #!/bin/bash
-chmod 111 101 011 hello 
->>>>>>> d4fe5067e4d3dfa55ad8a96588fa28b9ff410288
+chmod 753 hello

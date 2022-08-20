@@ -1,34 +1,38 @@
 #!/usr/bin/env bash
-#Bash script that creates a subprocess
-/lib/lsb/init-functions
-
-PIDFILE=/var/run/my_process.pid
+# Indefinitely writes I am alive! to the file /tmp/my_process
 
 start() {
+    echo "manage_my_process started"
     ./manage_my_process &
-    echo "$!" > "$PIDFILE"
+    echo $$ > /var/run/my_process.pid
 }
 
 stop() {
-    sudo kill -15 "$(cat "$PIDFILE")" && rm -f "$PIDFILE"
+    echo "manage_my_process stopped"
+    rm "/var/run/my_process.pid"
+    pkill manage_my_process
 }
 
-case "$1" in 
+restart() {
+    echo "manage_my_process restarted"
+    pkill manage_my_process
+    rm "/var/run/my_process.pid"
+    ./manage_my_process &
+    echo $$ > /var/run/my_process.pid
+}
+
+case "$1" in
     start)
-       start
-       echo "manage_my_process started"
-       ;;
+	start
+	;;
     stop)
-       stop
-       echo "manage_my_process stopped"
-       ;;
+	stop
+	;;
     restart)
-       stop
-       start
-       echo "manage_my_process restarted"
-       ;;
+	restart
+	;;
     *)
-       echo "Usage: manage_my_process {start|stop|restart}"
+	echo "Usage: $0 {start|stop|restart}"
 esac
 
 exit 0

@@ -1,38 +1,36 @@
 #!/usr/bin/env bash
-# Indefinitely writes I am alive! to the file /tmp/my_process
+#  Bash (init) script 101-manage_my_process that manages manage_my_process
 
 start() {
-    echo "manage_my_process started"
     ./manage_my_process &
-    echo $$ > /var/run/my_process.pid
+    echo "$!" > /var/run/my_process.pid
+    echo "manage_my_process started"
 }
 
 stop() {
+    kill "$(pgrep -f /manage_my_process)"
+    rm -f /var/run/my_process.pid
     echo "manage_my_process stopped"
-    rm "/var/run/my_process.pid"
-    pkill manage_my_process
 }
 
 restart() {
-    echo "manage_my_process restarted"
-    pkill manage_my_process
-    rm "/var/run/my_process.pid"
+    kill "$(pgrep -f /manage_my_process)"
+    rm -f /var/run/my_process.pid
     ./manage_my_process &
-    echo $$ > /var/run/my_process.pid
+    echo "$!" > /var/run/my_process.pid
+    echo "manage_my_process restarted"
 }
 
 case "$1" in
     start)
-	start
-	;;
+       start
+       ;;
     stop)
-	stop
-	;;
+       stop
+       ;;
     restart)
 	restart
 	;;
     *)
-	echo "Usage: $0 {start|stop|restart}"
+       echo "Usage: manage_my_process {start|stop|restart}"
 esac
-
-exit 0

@@ -1,0 +1,6 @@
+Host Bendito
+    HostName 34.139.205.239
+    User ubuntu
+    IdentityFile ~/.ssh/school
+    PasswordAuthentication no
+    PubkeyAuthentication yes

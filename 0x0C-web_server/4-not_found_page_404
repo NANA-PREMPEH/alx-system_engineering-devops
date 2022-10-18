@@ -1,22 +1,10 @@
 #!/usr/bin/env bash
-# Install nginx and start it
-apt-get -y install nginx
-
-# Firewall setting: Allow Nginx to serve on HTTP
-ufw allow 'Nginx HTTP'
-
-# Create a new index.html file that will be used over the default index.nginx-debian.html
-echo "Hello World!" >> /var/www/html/index.html
-
-#Give the user  ownership to website files
-chown -R $USER:$USER /var/www/html
-chmod -R 755 /var/www
-
-# Redirect to /redirect_me to a youtube video
-sed -i '37i\rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;' /etc/nginx/sites-available/default
-
-# Setup 404 page
-echo "Ceci n'est pas une page\n" >> /var/www/html/error_404.html
-sed -i '38i\error_page 404 /error_404.html;' /etc/nginx/sites-available/default
-
-service nginx start
+# script that install nginx
+sudo apt-get -y update
+sudo apt-get -y install nginx
+sudo ufw -y allow 'Nginx HTTP'
+sudo -i
+echo "Holberton School" > /var/www/html/index.nginx-debian.html
+echo "Ceci n'est pas une page" > /var/www/html/custom_404.html
+sed -i "s/server_name _;/server_name _;\n\terror_page 404 \/custom_404.html;\n\tlocation = \/custom_404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}\n\tlocation \/redirect_me {\n\t\treturn 301 https:\/\/www.youtube.com\/watch?v=QH2-TGUlwu4;\n\t}/" /etc/nginx/sites-available/default
+sudo service nginx start

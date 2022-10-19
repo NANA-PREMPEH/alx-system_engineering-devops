@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
-# configures a new Ubuntu machine
-# Install nginx on web-01 server
-# Configure your Nginx server to have a custom 404 page that contains the string Ceci n'est pas une page
-STRING="\\\n\terror_page 404 /custom_404.html;\n"
+#Configure your Nginx server to have a custom 404 page
 apt-get -y update
 apt-get -y install nginx
 echo "Hello World!" > /var/www/html/index.html
-FIND=$(grep "error_page 404" /etc/nginx/sites-available/default)
-if [[ -z $FIND ]]; then
-    echo "Ceci n'est pas une page" > /var/www/html/custom_404.html
-    sed -i "40i $STRING" /etc/nginx/sites-available/default
-    service nginx restart
-fi
+#content of 404 page
+echo "Ceci n'est pas une page" > /var/www/html/404.html
+#sed to change lines
+sed -i '/server_name _/a location /redirect_me { rewrite ^ https://www.youtube.com/watch?v=QH2-TGUlw\u4? permanent; }' /etc/nginx/sites-available/default
+sed -i '/server_name _/a error_page 404 /404.html; location = /404.html {root /var/www/html/; internal; }' /etc/nginx/sites-available/default
+service nginx restart

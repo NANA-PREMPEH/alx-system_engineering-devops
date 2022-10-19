@@ -5,7 +5,7 @@
 STRING="\\\n\terror_page 404 /custom_404.html;\n"
 apt-get -y update
 apt-get -y install nginx
-echo "Holberton School" > /var/www/html/index.html
+echo "Hello World!" > /var/www/html/index.html
 FIND=$(grep "error_page 404" /etc/nginx/sites-available/default)
 if [[ -z $FIND ]]; then
     echo "Ceci n'est pas une page" > /var/www/html/custom_404.html

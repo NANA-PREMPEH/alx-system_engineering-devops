@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# fix docker container
+service apache2 restart

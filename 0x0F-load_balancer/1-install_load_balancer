@@ -1,21 +1,6 @@
 #!/usr/bin/env bash
-# configures a new HAproxy as a load balancer
-
-# Install HAproxy on a server
+# Configure new nginx server to have a custom header
 apt-get -y update
-apt-get -y install haproxy=1.6.\*
-
-# Configure haproxy configuration file to distribute requests using a roundrobin algorithm
-echo '
-frontend danicortes.tech
-        bind 0:80
-        default_backend web_servers
-
-backend web_servers
-        balance roundrobin
-        server 29847-web-01 44.192.68.9:80 
-        server 29847-web-02 35.174.208.90:80
-' >> /etc/haproxy/haproxy.cfg
-
-# Restart HAproxy service
-service haproxy restart
+apt-get install -y nginx
+sed -i '11i\add_header X-Served-By $HOSTNAME;' /etc/nginx/nginx.conf
+service nginx restart

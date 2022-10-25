@@ -1,17 +1,22 @@
 #!/usr/bin/env bash
-# Script that configure HAproxy on your lb-01 server.
+# Configure Nginx
 
-apt-get update
-apt-get install -y haproxy
-cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.default
-echo "
-listen 29847-lb-01
-	bind *:80
-	mode http
-	balance roundrobin
-	option httpclose
-	option forwardfor
-	server 29847-web-01 44.192.68.9:80 check
-	server 29847-web-02 35.174.208.90:80 check
-" >> /etc/haproxy/haproxy.cfg
-service haproxy restart
+apt update
+apt install -y nginx
+
+echo "Hello World" > /var/www/html/index.html
+echo "Ceci n'est pas une page" > /var/www/html/404.html
+
+printf %s "server {
+    listen 80;
+    listen [::]:80 default_server;
+    add_header X-Served-By $HOSTNAME;
+    root /var/www/html;
+    index index.html;
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+    error_page 404 /404.html;
+}" > /etc/nginx/sites-enabled/default
+
+service nginx restart

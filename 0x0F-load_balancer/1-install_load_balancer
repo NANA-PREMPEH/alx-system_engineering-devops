@@ -28,13 +28,13 @@ defaults
     timeout client  10000
     timeout server  10000
 frontend abnb
-    bind *:80
+    bind *:8080
     mode http
     default_backend abnb_backend
 backend abnb_backend
     balance roundrobin
-    server 29847-web-01 44.192.68.9:80 check
-    server 29847-web-02 35.174.208.90:80 check
+    server 29847-web-01 44.192.68.9:8080 check
+    server 29847-web-02 35.174.208.90:8080 check
 
 " >> /etc/haproxy/haproxy.cfg
 

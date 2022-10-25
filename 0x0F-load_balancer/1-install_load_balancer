@@ -1,22 +1,42 @@
 #!/usr/bin/env bash
-# Configure Nginx
+# Installs HAProxy version 2.6 with the following configurations:
+#+    Enables management via the init script.
+#+    Distributes requests using a round-robin algorithm.
 
-apt update
-apt install -y nginx
+apt-get install -y software-properties-common
+add-apt-repository -y ppa:vbernat/haproxy-2.6
+apt-get update
+apt-get install -y haproxy=2.6.\*
 
-echo "Hello World" > /var/www/html/index.html
-echo "Ceci n'est pas une page" > /var/www/html/404.html
+echo "ENABLED=1" >> /etc/default/haproxy
+mv /etc/haproxy/haproxy.cfg{,.original}
+touch /etc/haproxy/haproxy.cfg
 
-printf %s "server {
-    listen 80;
-    listen [::]:80 default_server;
-    add_header X-Served-By $HOSTNAME;
-    root /var/www/html;
-    index index.html;
-    location /redirect_me {
-        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
-    }
-    error_page 404 /404.html;
-}" > /etc/nginx/sites-enabled/default
+printf %s "global
+    log 127.0.0.1 local0 notice
+    maxconn 2000
+    user haproxy
+    group haproxy
+defaults
+    log     global
+    mode    http
+    option  httplog
+    option  dontlognull
+    retries 3
+    option redispatch
+    timeout connect  5000
+    timeout client  10000
+    timeout server  10000
+frontend abnb
+    bind *:80
+    mode http
+    default_backend abnb_backend
+backend abnb_backend
+    balance roundrobin
+    server 29847-web-01 44.192.68.9:80 check
+    server 29847-web-02 35.174.208.90:80 check
 
-service nginx restart
+" >> /etc/haproxy/haproxy.cfg
+
+service haproxy start
+                      

@@ -1,6 +1,29 @@
 #!/usr/bin/env bash
-# Configure new nginx server to have a custom header
-apt-get -y update
-apt-get install -y nginx
-sed -i '11i\add_header X-Served-By $HOSTNAME;' /etc/nginx/nginx.conf
-service nginx restart
+# Install the HAProxy and configure it for 2 machines
+
+# Update & Upgrade dependencies and packages
+sudo apt-get -y update
+sudo apt-get -y upgrade
+sudo apt-get install -y haproxy
+
+# Configure HAProxy init
+echo "ENABLED=1" >> /etc/default/haproxy
+
+# Create Backup of haproxy.cfg and HAProxy file
+sudo cp /etc/default/haproxy /etc/default/haproxy.bak
+sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.bak
+
+# Configure Round Robin
+echo "
+# Load balanced Pool
+frontend front
+        bind *:80
+	    default_backend web-back
+backend web-back
+        balance roundrobin
+        server 29847-web-01 44.192.68.9:80 check
+        server 29847-web-02 35.174.208.90:80 check" >> /etc/haproxy/haproxy.cfg
+
+# Restart the HAProxy
+sudo service haproxy reload
+sudo service haproxy restart

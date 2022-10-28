@@ -1,18 +1,16 @@
-#!/usr/bin/env bash
-# Script that will display information about subdomains
+#!/usr/bin/env bash 
+# Display information about subdomains.
 
-DNS_info () {
-    ANSWER=$(dig $2 | grep -A1 'ANSWER SECTION:' | awk 'NR==2 {print $0}')
-    echo "The subdomain $1 is a $(echo $ANSWER | awk '{print $4}') record and points to $(echo $ANSWER | awk '{print $5}')"
+subdomaininfo () {
+    dig "$1" | grep -A1 'ANSWER SECTION:' | tail -n 1 | sed -r "s/$1./$2/g" | sed -r "s/ /\t/g" | sed -r "s/\t/ /g" | awk '{ print "The subdomain " $1 " is a " $4 " record and points to "  $5 }'
 }
 
-if [[ $# == 1 ]]; then
-    subdomains=('www' 'lb-01' 'web-01' 'web-02')
-    for i in "${subdomains[@]}"; do
-	CONCAT="$i.$1"
-	DNS_info $i $CONCAT
-    done
+if [ "$#" -eq 2 ]
+then
+    subdomaininfo "$2.$1" "$2"
 else
-    CONCAT="$2.$1"
-    DNS_info $2 $CONCAT
+    subdomaininfo "www.$1" "www"
+    subdomaininfo "lb-01.$1" "lb-01"
+    subdomaininfo "web-01.$1" "web-01"
+    subdomaininfo "web-02.$1" "web-02"
 fi

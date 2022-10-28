@@ -39,5 +39,5 @@ listen www
         bind *:443 ssl crt /etc/haproxy/certs/www.napsa.tech.pem
         http-request redirect scheme https unless { ssl_fc }
         balance roundrobin
-        server 1231-web-01 44.192.68.9:80 check
-        server 1231-web-02 35.174.208.90:80 check
+        server 29847-web-01 44.192.68.9:80 check
+        server 29847-web-02 35.174.208.90:80 check

@@ -35,7 +35,7 @@ defaults
         errorfile 504 /etc/haproxy/errors/504.http
 
 frontend ssl_443
-         bind *:443 ssl crt /etc/haproxy/cert/cert.pem
+         bind *:443 ssl crt /etc/haproxy/cert/www.napsa.tech.pem
          reqadd X-Forwarded-Proto:\ https
          default_backend web_servers
 
@@ -48,5 +48,5 @@ frontend danicortes.tech
 backend web_servers
         balance roundrobin
         redirect scheme https if !{ ssl_fc }
-        server 2304-web-01 35.196.3.110:80 check
-        server 2304-web-02 34.74.150.12:80 check
+        server 29847-web-01 44.192.68.9:80 check
+        server 29847-web-02 35.174.208.90:80 check

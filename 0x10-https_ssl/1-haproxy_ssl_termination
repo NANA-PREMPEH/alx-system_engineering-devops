@@ -34,19 +34,10 @@ defaults
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
 
-frontend ssl_443
-         bind *:443 ssl crt /etc/haproxy/cert/cert.pem
-         reqadd X-Forwarded-Proto:\ https
-         default_backend web_servers
-
-frontend danicortes.tech
-        bind 0:80
-        reqadd X-Forwarded-Proto:\ http
-        redirect scheme https code 301 if !{ ssl_fc }
-        default_backend web_servers
-
-backend web_servers
+listen www
+        bind *:80
+        bind *:443 ssl crt /etc/haproxy/certs/www.napsa.tech.pem
+        http-request redirect scheme https unless { ssl_fc }
         balance roundrobin
-        redirect scheme https if !{ ssl_fc }
-        server 2304-web-01 44.192.68.9:80 check
-        server 2304-web-02 35.174.208.90:80 check
+        server 1231-web-01 44.192.68.9:80 check
+        server 1231-web-02 35.174.208.90:80 check

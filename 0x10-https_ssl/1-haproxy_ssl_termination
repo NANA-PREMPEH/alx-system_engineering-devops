@@ -45,7 +45,7 @@ frontend www-http
         default_backend www-backend
 
 frontend www-https
-        bind *:443 ssl crt /etc/haproxy/certs/royalboe.tech.pem
+        bind *:443 ssl crt /etc/haproxy/certs/napsa.tech.pem
         http-request add-header X-Forwarded-Proto https
         acl letsencrypt-acl path_beg /.well-known/acme-challenge/
         use_backend letsencrypt-backend if letsencrypt-acl
@@ -53,7 +53,7 @@ frontend www-https
 
 backend www-backend
         redirect scheme https if !{ ssl_fc }
-        server 29159-web-01 35.173.42.252:80 check
-        server 29159-web-02 44.211.23.142:80 check
+        server 29847-web-01 44.192.68.9:80 check
+        server 29847-web-02 35.174.208.90:80 check
 backend letsencrypt-backend
         server letsencrypt 127.0.0.1:54321
